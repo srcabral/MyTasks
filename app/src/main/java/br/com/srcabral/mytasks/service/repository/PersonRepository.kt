@@ -1,5 +1,7 @@
 package br.com.srcabral.mytasks.service.repository
 
+import android.content.Context
+import br.com.srcabral.mytasks.R
 import br.com.srcabral.mytasks.service.constants.TaskConstants
 import br.com.srcabral.mytasks.service.listener.APIListener
 import br.com.srcabral.mytasks.service.model.HeaderModel
@@ -10,7 +12,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PersonRepository {
+class PersonRepository(val context: Context) {
 
     private var mRemote = RetrofitClient.createService(PersonService::class.java)
 
@@ -28,7 +30,7 @@ class PersonRepository {
             }
 
             override fun onFailure(call: Call<HeaderModel>, t: Throwable) {
-                listener.onFailure(t.message.toString())
+                listener.onFailure(context.getString(R.string.ERROR_UNEXPECTED))
             }
 
         })
