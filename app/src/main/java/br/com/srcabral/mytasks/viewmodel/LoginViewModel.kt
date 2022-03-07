@@ -1,6 +1,7 @@
 package br.com.srcabral.mytasks.viewmodel
 
 import android.app.Application
+import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -19,6 +20,9 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     private val mLogin = MutableLiveData<ValidationListener>()
     var login : LiveData<ValidationListener> = mLogin
 
+    private val mLoggedUser = MutableLiveData<Boolean>()
+    var loggedUser: LiveData<Boolean> = mLoggedUser
+
     /**
      * Faz login usando API
      */
@@ -33,8 +37,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 mLogin.value = ValidationListener()
             }
 
-            override fun onFailure(str: String) {
-                mLogin.value = ValidationListener(str)
+            override fun onFailure(message: String) {
+                mLogin.value = ValidationListener(message)
 
             }
 
@@ -45,6 +49,12 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
      * Verifica se usuário está logado
      */
     fun verifyLoggedUser() {
+        val token = mSharedPreferences.get(TaskConstants.SHARED.TOKEN_KEY)
+        val personKey = mSharedPreferences.get(TaskConstants.SHARED.PERSON_KEY)
+
+        val logged = (token != "" && personKey != "")
+
+        mLoggedUser.value = logged
     }
 
 }
