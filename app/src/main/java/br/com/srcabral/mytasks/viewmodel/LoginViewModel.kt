@@ -10,11 +10,13 @@ import br.com.srcabral.mytasks.service.listener.APIListener
 import br.com.srcabral.mytasks.service.listener.ValidationListener
 import br.com.srcabral.mytasks.service.model.HeaderModel
 import br.com.srcabral.mytasks.service.repository.PersonRepository
+import br.com.srcabral.mytasks.service.repository.PriorityRepository
 import br.com.srcabral.mytasks.service.repository.local.SecurityPreferences
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     private val mPersonRepository = PersonRepository(application)
+    private val mPriorityRepository = PriorityRepository(application)
     private val mSharedPreferences = SecurityPreferences(application)
 
     private val mLogin = MutableLiveData<ValidationListener>()
@@ -53,6 +55,10 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         val personKey = mSharedPreferences.get(TaskConstants.SHARED.PERSON_KEY)
 
         val logged = (token != "" && personKey != "")
+
+        if (!logged){
+            mPriorityRepository.all()
+        }
 
         mLoggedUser.value = logged
     }
