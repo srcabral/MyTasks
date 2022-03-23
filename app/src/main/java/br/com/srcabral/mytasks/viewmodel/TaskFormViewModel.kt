@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import br.com.srcabral.mytasks.service.model.PriorityModel
+import br.com.srcabral.mytasks.service.model.TaskModel
 import br.com.srcabral.mytasks.service.repository.PriorityRepository
 
 class TaskFormViewModel(application: Application) : AndroidViewModel(application) {
@@ -15,6 +16,10 @@ class TaskFormViewModel(application: Application) : AndroidViewModel(application
 
     fun listPriorities() {
         mPriorityList.value = mPriorityRepository.list()
+    }
+
+    fun save(task: TaskModel) {
+        TODO("Not yet implemented")
     }
 
 

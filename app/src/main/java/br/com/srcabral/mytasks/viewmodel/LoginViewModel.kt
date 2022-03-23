@@ -12,6 +12,7 @@ import br.com.srcabral.mytasks.service.model.HeaderModel
 import br.com.srcabral.mytasks.service.repository.PersonRepository
 import br.com.srcabral.mytasks.service.repository.PriorityRepository
 import br.com.srcabral.mytasks.service.repository.local.SecurityPreferences
+import br.com.srcabral.mytasks.service.repository.remote.RetrofitClient
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -36,6 +37,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 mSharedPreferences.store(TaskConstants.SHARED.PERSON_KEY, model.personKey)
                 mSharedPreferences.store(TaskConstants.SHARED.PERSON_NAME, model.name)
 
+                RetrofitClient.addHeader(model.token, model.personKey)
+
                 mLogin.value = ValidationListener()
             }
 
@@ -53,6 +56,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     fun verifyLoggedUser() {
         val token = mSharedPreferences.get(TaskConstants.SHARED.TOKEN_KEY)
         val personKey = mSharedPreferences.get(TaskConstants.SHARED.PERSON_KEY)
+
+        RetrofitClient.addHeader(token, personKey)
 
         val logged = (token != "" && personKey != "")
 

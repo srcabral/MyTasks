@@ -9,6 +9,7 @@ import android.widget.DatePicker
 import androidx.lifecycle.ViewModelProvider
 import br.com.srcabral.mytasks.R
 import br.com.srcabral.mytasks.databinding.ActivityTaskFormBinding
+import br.com.srcabral.mytasks.service.model.TaskModel
 import br.com.srcabral.mytasks.viewmodel.RegisterViewModel
 import br.com.srcabral.mytasks.viewmodel.TaskFormViewModel
 import java.text.SimpleDateFormat
@@ -21,6 +22,7 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
     private lateinit var binding: ActivityTaskFormBinding
     private lateinit var mViewModel: TaskFormViewModel
     private val mDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+    private val mListPriorityId: MutableList<Int> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,15 +41,21 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
     override fun onClick(v: View) {
         val id = v.id
         if (id == R.id.button_save) {
-
-            /*val name = edit_name.text.toString()
-            val email = edit_email.text.toString()
-            val password = edit_password.text.toString()
-
-            mViewModel.create(name, email, password)*/
+            handleSave()
         } else if (id == R.id.button_date){
             showDatePicker()
         }
+    }
+
+    fun handleSave(){
+        val task = TaskModel().apply {
+            this.description = binding.editDescription.text.toString()
+            this.complete = binding.checkComplete.isChecked
+            this.dueDate = binding.buttonDate.text.toString()
+            this.priorityId = mListPriorityId[binding.spinnerPriority.selectedItemPosition]
+        }
+
+        mViewModel.save(task)
     }
 
     fun showDatePicker(){
@@ -63,6 +71,7 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
             val list: MutableList<String> = arrayListOf()
             for(item in it){
                 list.add(item.description)
+                mListPriorityId.add(item.id)
             }
             val s = list
             val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, list)
