@@ -4,11 +4,13 @@ import android.app.DatePickerDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.DatePicker
 import androidx.lifecycle.ViewModelProvider
 import br.com.srcabral.mytasks.R
 import br.com.srcabral.mytasks.databinding.ActivityTaskFormBinding
 import br.com.srcabral.mytasks.viewmodel.RegisterViewModel
+import br.com.srcabral.mytasks.viewmodel.TaskFormViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -17,7 +19,7 @@ import java.util.*
 class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
     private lateinit var binding: ActivityTaskFormBinding
-    private lateinit var mViewModel: RegisterViewModel
+    private lateinit var mViewModel: TaskFormViewModel
     private val mDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,11 +27,13 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
         binding = ActivityTaskFormBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mViewModel = ViewModelProvider(this).get(RegisterViewModel::class.java)
+        mViewModel = ViewModelProvider(this).get(TaskFormViewModel::class.java)
 
         // Inicializa eventos
         listeners()
         observe()
+
+        mViewModel.listPriorities()
     }
 
     override fun onClick(v: View) {
@@ -55,6 +59,15 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
     }
 
     private fun observe() {
+        mViewModel.priorities.observe(this, androidx.lifecycle.Observer {
+            val list: MutableList<String> = arrayListOf()
+            for(item in it){
+                list.add(item.description)
+            }
+            val s = list
+            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, list)
+            binding.spinnerPriority.adapter = adapter
+        })
     }
 
     private fun listeners() {
